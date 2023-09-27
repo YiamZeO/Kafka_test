@@ -1,40 +1,44 @@
 version: "3.9"
 
 services:
-  zoo1:
+  my_zookeeper1:
     image: confluentinc/cp-zookeeper:latest
     ports:
       - "2181:2181"
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
 
-  kafka1:
+  my_kafka1:
     image: confluentinc/cp-kafka:latest
     ports:
       - "9092:9092"
+      - "29092:29092"
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ZOOKEEPER_CONNECT: my_zookeeper1:2181
+      KAFKA_LISTENERS: INNER_CONNECT://0.0.0.0:9092,EXTERNAL_CONNECT://0.0.0.0:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INNER_CONNECT:PLAINTEXT,EXTERNAL_CONNECT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INNER_CONNECT
+      KAFKA_ADVERTISED_LISTENERS: INNER_CONNECT://my_kafka1:9092,EXTERNAL_CONNECT://localhost:29092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
     depends_on:
-      - zoo1
+      - my_zookeeper1
 
-  kafka2:
+  my_kafka2:
     image: confluentinc/cp-kafka:latest
     ports:
       - "9093:9093"
+      - "29093:29093"
     environment:
       KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9093
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ZOOKEEPER_CONNECT: my_zookeeper1:2181
+      KAFKA_LISTENERS: INNER_CONNECT://0.0.0.0:9093,EXTERNAL_CONNECT://0.0.0.0:29093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INNER_CONNECT:PLAINTEXT,EXTERNAL_CONNECT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INNER_CONNECT
+      KAFKA_ADVERTISED_LISTENERS: INNER_CONNECT://my_kafka2:9093,EXTERNAL_CONNECT://localhost:29093
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
     depends_on:
-      - zoo1
+      - my_zookeeper1
 
   kafka-ui:
     image: provectuslabs/kafka-ui
@@ -43,10 +47,10 @@ services:
       - "8090:8080"
     restart: always
     environment:
-      - KAFKA_CLUSTERS_0_NAME=local
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka1:9092,kafka2:9093
-      - KAFKA_CLUSTERS_0_ZOOKEEPER=zoo1:2181
+      - KAFKA_CLUSTERS_0_NAME=my_kafka_cluster
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=my_kafka1:9092,my_kafka2:9093
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=my_zookeeper1:2181
     links:
-      - kafka1
-      - kafka2
-      - zoo1
+      - my_kafka1
+      - my_kafka2
+      - my_zookeeper1

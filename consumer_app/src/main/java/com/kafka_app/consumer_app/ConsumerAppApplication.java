@@ -15,7 +15,7 @@ import java.util.Properties;
 public class ConsumerAppApplication {
 
     public static void main(String[] args) {
-        String bootstrapServers = "localhost:9092";
+        String bootstrapServers = "localhost:29092";
         String groupId = "test_consumers";
         String topic = "test_topic";
         Properties properties = new Properties();

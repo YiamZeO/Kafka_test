@@ -11,7 +11,7 @@ import java.util.Properties;
 public class ProducerAppApplication {
 
     public static void main(String[] args) {
-        String bootstrapServers = "localhost:9092";
+        String bootstrapServers = "localhost:29092";
         Properties properties = new Properties();
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
