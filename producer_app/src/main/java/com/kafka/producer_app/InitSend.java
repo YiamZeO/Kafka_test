@@ -1,5 +1,6 @@
 package com.kafka.producer_app;
 
+import com.kafka_app.classes.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -22,8 +23,8 @@ public class InitSend {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            String message = "Producer message number" + i;
-            kafkaSenderExample.sendMessageInTopic(message);
+            UserInfo userInfo = new UserInfo("name " + i, "password " + i);
+            kafkaSenderExample.sendMessageInTopic(userInfo);
         }
     }
 }

@@ -21,5 +21,6 @@
 	<modules>
 		<module>consumer_app</module>
 		<module>producer_app</module>
+		<module>classes</module>
 	</modules>
 </project>
