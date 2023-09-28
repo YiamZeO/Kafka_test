@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class KafkaListenersExample {
-    @KafkaListener(topics = "test_topic")
+    @KafkaListener(topics = "${my.kafka.topic.name}")
     void listener(String data) {
         System.out.println(data);
     }

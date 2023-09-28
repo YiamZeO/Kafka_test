@@ -7,9 +7,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class InitSend {
+    private final KafkaSenderExample kafkaSenderExample;
+
     @Autowired
-    private KafkaSenderExample kafkaSenderExample;
-    private final String topic = "test_topic";
+    public InitSend(KafkaSenderExample kafkaSenderExample) {
+        this.kafkaSenderExample = kafkaSenderExample;
+    }
 
     @EventListener
     public void initiateSendingMessage(ApplicationReadyEvent event) {
@@ -20,7 +23,7 @@ public class InitSend {
                 throw new RuntimeException(e);
             }
             String message = "Producer message number" + i;
-            kafkaSenderExample.sendMessageInTopic(message, topic);
+            kafkaSenderExample.sendMessageInTopic(message);
         }
     }
 }
